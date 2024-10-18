@@ -1,6 +1,5 @@
 import 'package:expense_tracker/models/expense.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class ExpenseItem extends StatelessWidget {
   const ExpenseItem({super.key, required this.expense});
@@ -28,9 +27,9 @@ class ExpenseItem extends StatelessWidget {
                 Text('\$${expense.amount.toStringAsFixed(2)}'),
                 Row(
                   children: [
-                    const Icon(Icons.airplane_ticket),
+                    Icon(expense.icon),
                     const SizedBox(width: 6),
-                    Text(DateFormat('dd/MM/yyyy').format(expense.date)),
+                    Text(expense.formattedDate),
                   ],
                 )
               ],
