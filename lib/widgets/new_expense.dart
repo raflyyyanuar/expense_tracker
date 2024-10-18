@@ -32,6 +32,48 @@ class _NewExpenseState extends State<NewExpense> {
     });
   }
 
+  void submitExpense() {
+    if (titleController.text.trim().isEmpty) {
+      // title is empty
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text("Invalid title!"),
+          content: Text("Title must not be empty."),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text("OK"),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+    final enteredAmount = double.tryParse(amountController.text);
+    if (enteredAmount == null || enteredAmount <= 0) {
+      // invalid amount
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text("Invalid amount!"),
+          content: Text("Amount must be greater than zero."),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text("OK"),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+  }
+
   @override
   void dispose() {
     titleController.dispose();
@@ -113,6 +155,7 @@ class _NewExpenseState extends State<NewExpense> {
               ),
               ElevatedButton(
                 onPressed: () {
+                  submitExpense();
                   print(titleController.text);
                   print(amountController.text);
                 },
