@@ -1,3 +1,4 @@
+import 'package:expense_tracker/models/expense.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -14,19 +15,20 @@ class _NewExpenseState extends State<NewExpense> {
   final titleController = TextEditingController();
   final amountController = TextEditingController();
 
-  DateTime? selectedDate;
+  DateTime selectedDate = DateTime.now();
+  Category selectedCategory = Category.leisure;
 
   void _showDatePicker() async {
     final now = DateTime.now();
     final firstDate = DateTime(now.year - 1, now.month, now.day);
     final pickedDate = await showDatePicker(
       context: context,
-      initialDate: now,
+      initialDate: selectedDate,
       firstDate: firstDate,
       lastDate: now,
     );
     setState(() {
-      selectedDate = pickedDate;
+      selectedDate = pickedDate!;
     });
   }
 
@@ -70,9 +72,7 @@ class _NewExpenseState extends State<NewExpense> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Text(selectedDate == null
-                        ? "No date selected"
-                        : DateFormat.yMd().format(selectedDate!)),
+                    Text(DateFormat.yMd().format(selectedDate)),
                     IconButton(
                         onPressed: _showDatePicker,
                         icon: const Icon(Icons.calendar_month)),
@@ -81,8 +81,30 @@ class _NewExpenseState extends State<NewExpense> {
               )
             ],
           ),
+          const SizedBox(height: 8),
           Row(
             children: [
+              DropdownButton(
+                value: selectedCategory,
+                items: Category.values
+                    .map(
+                      (c) => DropdownMenuItem(
+                        value: c,
+                        child: Text(
+                          c.name.toUpperCase(),
+                        ),
+                      ),
+                    )
+                    .toList(),
+                onChanged: (value) {
+                  if (value != null) {
+                    setState(() {
+                      selectedCategory = value;
+                    });
+                  }
+                },
+              ),
+              const Spacer(),
               TextButton(
                 onPressed: () {
                   Navigator.pop(context);
