@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class NewExpense extends StatefulWidget {
-  const NewExpense({super.key});
+  const NewExpense({super.key, required this.onSubmit});
+
+  final void Function(Expense) onSubmit;
 
   @override
   State<NewExpense> createState() {
@@ -32,25 +34,26 @@ class _NewExpenseState extends State<NewExpense> {
     });
   }
 
-  void submitExpense() {
-    if (titleController.text.trim().isEmpty) {
+  bool submitExpense() {
+    final enteredTitle = titleController.text.trim();
+    if (enteredTitle.isEmpty) {
       // title is empty
       showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
           title: const Text("Invalid title!"),
-          content: Text("Title must not be empty."),
+          content: const Text("Title must not be empty."),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text("OK"),
+              child: const Text("OK"),
             ),
           ],
         ),
       );
-      return;
+      return false;
     }
     final enteredAmount = double.tryParse(amountController.text);
     if (enteredAmount == null || enteredAmount <= 0) {
@@ -59,19 +62,28 @@ class _NewExpenseState extends State<NewExpense> {
         context: context,
         builder: (ctx) => AlertDialog(
           title: const Text("Invalid amount!"),
-          content: Text("Amount must be greater than zero."),
+          content: const Text("Amount must be greater than zero."),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text("OK"),
+              child: const Text("OK"),
             ),
           ],
         ),
       );
-      return;
+      return false;
     }
+
+    final Expense newExpense = Expense(
+      title: enteredTitle,
+      amount: enteredAmount,
+      date: selectedDate,
+      category: selectedCategory,
+    );
+    widget.onSubmit(newExpense);
+    return true;
   }
 
   @override
@@ -155,7 +167,10 @@ class _NewExpenseState extends State<NewExpense> {
               ),
               ElevatedButton(
                 onPressed: () {
-                  submitExpense();
+                  final isSuccessful = submitExpense();
+                  if (isSuccessful) {
+                    Navigator.pop(context);
+                  }
                   print(titleController.text);
                   print(amountController.text);
                 },
