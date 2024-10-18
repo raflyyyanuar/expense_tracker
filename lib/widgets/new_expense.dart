@@ -26,6 +26,7 @@ class _NewExpenseState extends State<NewExpense> {
       padding: const EdgeInsets.all(12),
       child: Column(
         children: [
+          Text("Add New Expense"),
           // Title
           TextField(
             controller: titleController,
@@ -46,7 +47,9 @@ class _NewExpenseState extends State<NewExpense> {
           Row(
             children: [
               TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pop(context);
+                },
                 child: const Text("Cancel"),
               ),
               ElevatedButton(
@@ -54,7 +57,7 @@ class _NewExpenseState extends State<NewExpense> {
                   print(titleController.text);
                   print(amountController.text);
                 },
-                child: const Text("Save Expense"),
+                child: const Text("Submit"),
               )
             ],
           )
