@@ -13,6 +13,16 @@ class _NewExpenseState extends State<NewExpense> {
   final titleController = TextEditingController();
   final amountController = TextEditingController();
 
+  void _showDatePicker() {
+    final now = DateTime.now();
+    showDatePicker(
+      context: context,
+      initialDate: now,
+      firstDate: DateTime(now.year - 1, now.month, now.day),
+      lastDate: now,
+    );
+  }
+
   @override
   void dispose() {
     titleController.dispose();
@@ -26,7 +36,7 @@ class _NewExpenseState extends State<NewExpense> {
       padding: const EdgeInsets.all(12),
       child: Column(
         children: [
-          Text("Add New Expense"),
+          const Text("Add New Expense"),
           // Title
           TextField(
             controller: titleController,
@@ -35,14 +45,32 @@ class _NewExpenseState extends State<NewExpense> {
               label: Text("Title"),
             ),
           ),
-          // Amount
-          TextField(
-            controller: amountController,
-            decoration: const InputDecoration(
-              prefixText: "\$ ",
-              label: Text("Amount"),
-            ),
-            keyboardType: TextInputType.number,
+          Row(
+            children: [
+              // Amount
+              Expanded(
+                child: TextField(
+                  controller: amountController,
+                  decoration: const InputDecoration(
+                    prefixText: "\$ ",
+                    label: Text("Amount"),
+                  ),
+                  keyboardType: TextInputType.number,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    const Text("Selected Date"),
+                    IconButton(
+                        onPressed: _showDatePicker,
+                        icon: const Icon(Icons.calendar_month)),
+                  ],
+                ),
+              )
+            ],
           ),
           Row(
             children: [
