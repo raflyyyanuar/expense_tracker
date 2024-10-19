@@ -63,17 +63,20 @@ class _ExpensesState extends State<Expenses> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: const Text("Expense deleted"),
-        action: SnackBarAction(label: "Undo", onPressed: () {
-          setState(() {
-            registeredExpenses.insert(expenseIndex, expense);
-          });
-        }),
+        action: SnackBarAction(
+            label: "Undo",
+            onPressed: () {
+              setState(() {
+                registeredExpenses.insert(expenseIndex, expense);
+              });
+            }),
       ),
     );
   }
 
   void openAddExpenseOverlay() {
     showModalBottomSheet(
+      useSafeArea: true,
       isScrollControlled: true,
       context: context,
       builder: (ctx) => NewExpense(onSubmit: registerExpense),
@@ -82,6 +85,8 @@ class _ExpensesState extends State<Expenses> {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+
     Widget mainScreen = const Center(
       child: Text("No expenses found. Try adding some!"),
     );
@@ -103,14 +108,25 @@ class _ExpensesState extends State<Expenses> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          Chart(expenses: registeredExpenses),
-          Expanded(
-            child: mainScreen,
-          ),
-        ],
-      ),
+      body: width < 600
+          ? Column(
+              children: [
+                Chart(expenses: registeredExpenses),
+                Expanded(
+                  child: mainScreen,
+                ),
+              ],
+            )
+          : Row(
+              children: [
+                Expanded(
+                  child: Chart(expenses: registeredExpenses),
+                ),
+                Expanded(
+                  child: mainScreen,
+                ),
+              ],
+            ),
     );
   }
 }
